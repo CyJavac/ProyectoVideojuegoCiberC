@@ -24,6 +24,20 @@ public class NivelPirateria : MonoBehaviour
     private float tiempoRestante;
     private bool nivelActivo = false;
 
+    [SerializeField] private Renderer monitorRenderer; 
+    [SerializeField] private Material materialNormal;
+    [SerializeField] private Material materialInfectado;
+
+    [SerializeField] private GameObject glitchOverlay;
+
+    void CambiarMaterialMonitor()
+    {
+        if (monitorRenderer != null && materialInfectado != null)
+        {
+            monitorRenderer.material = materialInfectado;
+        }
+    }
+
     private void OnEnable()
     {
         ReiniciarNivel();
@@ -65,24 +79,28 @@ public class NivelPirateria : MonoBehaviour
 
         if (esSeguro)
         {
-            // victoria parcial, podría dar puntos y terminar
             feedbackTexto.text = $"Descarga segura desde: {nombreSitio}. ¡Buen trabajo!";
-            // recompensa de ejemplo: restaurar un poco de salud
             saludActual = Mathf.Min(saludActual + 10f, saludMax);
+            ActualizarUI(); // <- refresca barra
             Victoria();
             return;
         }
 
-        // sitio sospechoso -> aplicamos daño
+        // Descarga sospechoso -> aplicamos daño
         saludActual -= daño;
-        if (saludActual < 0) saludActual = 0;
+        if (saludActual < 0) saludActual = 0; //Forzar que nunca quede negativo
 
         feedbackTexto.text = $"⚠ Has descargado desde: {nombreSitio}. Riesgo detectado.";
         GenerarPopup($"Advertencia: {nombreSitio} tiene anuncios y archivos sospechosos.");
 
-        if (saludActual <= 0) Derrota("Tu PC está completamente infectado.");
-        else AcomodarBarra();
+        ActualizarUI(); //Refresca barra ANTES de checkear derrota
+
+        if (saludActual <= 0)
+        {
+            Derrota("Tu PC está completamente infectado.");
+        }
     }
+
 
     void AcomodarBarra()
     {
@@ -122,7 +140,17 @@ public class NivelPirateria : MonoBehaviour
     void Derrota(string mensaje)
     {
         nivelActivo = false;
+        saludActual = 0;
+        ActualizarUI();
         feedbackTexto.text = mensaje + " ❌";
-        // mostrar efecto visual: glitch, pantalla corrupta, etc.
+
+        // Activar glitch overlay
+        if (glitchOverlay != null)
+        {
+            glitchOverlay.SetActive(true);
+        }
+
+        CambiarMaterialMonitor(); //Cambio de material
     }
+
 }

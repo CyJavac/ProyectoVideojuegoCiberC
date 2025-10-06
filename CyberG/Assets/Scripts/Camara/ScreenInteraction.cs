@@ -22,6 +22,8 @@ public class ScreenInteraction : MonoBehaviour
     private Vector3 preZoomPosition;
     private Quaternion preZoomRotation;
 
+
+
     public static bool IsZoomed() => isZoomed;
 
     void Start()
@@ -108,6 +110,7 @@ public class ScreenInteraction : MonoBehaviour
         Vector3 targetPosition = cameraPivot.position;
         Quaternion targetRotation = cameraPivot.rotation;
 
+
         float elapsedTime = 0f;
         while (elapsedTime < 1f)
         {
@@ -147,6 +150,7 @@ public class ScreenInteraction : MonoBehaviour
             elapsedTime += Time.deltaTime * zoomSpeed;
             yield return null;
         }
+
 
         isZoomed = false;
         uiController.SetZoomModeUI(false);

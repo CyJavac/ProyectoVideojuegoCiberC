@@ -8359,7 +8359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: -182.3299}
+  m_AnchoredPosition: {x: -0.000061035156, y: -182.32962}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &664688672
@@ -9488,7 +9488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8012547503978893201, guid: be172c14a9b4e9745b701120a08c5172, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 47.140064
+      value: 47.140305
       objectReference: {fileID: 0}
     - target: {fileID: 9107903718512902166, guid: be172c14a9b4e9745b701120a08c5172, type: 3}
       propertyPath: m_text
@@ -12330,8 +12330,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.1133, y: 9.7}
-  m_SizeDelta: {x: 394.23, y: 50}
+  m_AnchoredPosition: {x: 99.114, y: 124.1}
+  m_SizeDelta: {x: 198.23, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &882502038
 MonoBehaviour:
@@ -12353,7 +12353,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tomb Raider
+  m_text: Plunger Raider
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16432,7 +16432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4ddd5d652b938b84d88f5cb97d95e222, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2574fea7db378074884a3bc5bb322749, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18500,7 +18500,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Assassin\xB4s Creed"
+  m_text: Accountants' Deed
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -19882,7 +19882,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 398368759}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.49999997
+  m_Size: 0.9999944
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20712,8 +20712,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.1125, y: -75.700005}
-  m_SizeDelta: {x: 394.23, y: 109.4}
+  m_AnchoredPosition: {x: 99.113, y: -12.21}
+  m_SizeDelta: {x: 198.2, y: 194.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1468254718
 MonoBehaviour:
@@ -25289,7 +25289,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Life Is Strange
+  m_text: Life Is Normal-ish
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -27325,8 +27325,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000056267, y: 106}
-  m_SizeDelta: {x: 396.45, y: 126.01}
+  m_AnchoredPosition: {x: -104.3, y: 20}
+  m_SizeDelta: {x: 187.8, y: 261.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2098993876
 MonoBehaviour:
@@ -27348,7 +27348,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 91aab7b9235472645963d68b77138816, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e56ccb43829199d4f895498dfe2d5571, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -17,18 +17,20 @@ public class NivelPirateria : MonoBehaviour
     public GameObject popupPrefab;             // prefab simple para popups
 
     [Header("Parámetros")]
-    [Range(0f,100f)] public float saludMax = 100f;
+    [Range(0f, 100f)] public float saludMax = 100f;
     public float tiempoMax = 60f;
 
-    private float saludActual;
+    public float saludActual;
     private float tiempoRestante;
     private bool nivelActivo = false;
 
-    [SerializeField] private Renderer monitorRenderer; 
+    [SerializeField] private Renderer monitorRenderer;
     [SerializeField] private Material materialNormal;
     [SerializeField] private Material materialInfectado;
 
     [SerializeField] private GameObject glitchOverlay;
+
+    [SerializeField] private ChatPopupsManager chatManager;
 
     void CambiarMaterialMonitor()
     {
@@ -61,6 +63,9 @@ public class NivelPirateria : MonoBehaviour
             tiempoRestante = 0f;
             Derrota("Se acabó el tiempo. No encontraste una descarga segura.");
         }
+
+        if (saludActual < 50f && chatManager != null)
+            chatManager.ReducirIntervalo(5f);
 
         ActualizarUI();
     }
@@ -152,5 +157,7 @@ public class NivelPirateria : MonoBehaviour
 
         CambiarMaterialMonitor(); //Cambio de material
     }
+    
+    
 
 }

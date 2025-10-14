@@ -39,7 +39,10 @@ public class ScreenInteraction : MonoBehaviour
 
     void Update()
     {
-        if (!isZoomed && Input.GetMouseButtonDown(0))
+        //if (!isZoomed && Input.GetMouseButtonDown(0))
+        if (!isZoomed && Input.GetMouseButtonDown(0) &&
+        !PauseMenuManager.IsGamePaused() &&
+        !PauseMenuManager.InputBloqueadoTemporalmente)
         {
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             RaycastHit hit;
@@ -57,22 +60,35 @@ public class ScreenInteraction : MonoBehaviour
             }
         }
 
+        // // Verifica si se presiona ESC
+        // if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     if (isZoomed)
+        //     {
+        //         StartCoroutine(ReturnFromZoom());
+        //     }
+        //     else if (!PauseMenuManager.IsGamePaused()) // Solo abre si el juego no está pausado
+        //     {
+        //         PauseMenuManager.Instance.TogglePause();
+        //     }
+        // }
+
         // Verifica si se presiona ESC
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            //Si está haciendo zoom, permite salir del monitor
             if (isZoomed)
             {
                 StartCoroutine(ReturnFromZoom());
             }
-            else if (!PauseMenuManager.IsGamePaused()) // Solo abre si el juego no está pausado
-            {
-                PauseMenuManager.Instance.TogglePause();
-            }
+
+            //Si NO está en zoom, ya no debe abrir ni cerrar el menú de pausa
+            // Esto ahora lo controla únicamente PauseMenuManager.
         }
 
 
         //Temporal:
-        if (!isZoomed)
+        if (!isZoomed && !PauseMenuManager.IsGamePaused())
         {
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             RaycastHit hit;
@@ -82,17 +98,22 @@ public class ScreenInteraction : MonoBehaviour
             uiController.ShowSelectionTooltip(isLookingAtScreen);
 
             Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * raycastMaxDistance, Color.green);
-            
+
             if (Input.GetMouseButtonDown(0))
             {
                 //Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
                 //RaycastHit hit;
-                
+
                 if (Physics.Raycast(ray, out hit, raycastMaxDistance, screenLayer))
                 {
                     Debug.Log($"Hit: {hit.collider.gameObject.name}"); // Verifica qué monitor se detecta
                 }
             }
+        }
+        else
+        {
+            // Si está pausado o haciendo zoom, asegúrate de ocultarlo
+            uiController.ShowSelectionTooltip(false);
         }
     }
 

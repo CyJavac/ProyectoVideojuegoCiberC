@@ -12,31 +12,25 @@ public class PauseMenuManager : MonoBehaviour
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private GameObject quitConfirmationPanel;
     [SerializeField] private Slider sensitivitySlider;
-    [SerializeField] private TMP_InputField sensitivityInput; // Cambiado a TMP_InputField
+    [SerializeField] private TMP_InputField sensitivityInput;
     [SerializeField] private Toggle invertYToggle;
-    [SerializeField] private Button applyButton; // Nuevo botón
+    [SerializeField] private Button applyButton;
 
-    // Textos TMP (si los necesitas directamente)
     [SerializeField] private TextMeshProUGUI sensitivityLabel;
-    [SerializeField] private Text invertYLabel; //El texto del checkbox NO es TMP
+    [SerializeField] private Text invertYLabel;
 
-    [Header("Configuración")]
-    //[SerializeField] private float defaultSensitivity = 250f;
-    private static bool isPaused = false; // Ahora es estático
-    private float pendingSensitivity; // Valor temporal
+    private static bool isPaused = false;
+    private float pendingSensitivity;
+    public static bool InputBloqueadoTemporalmente = false; //NUEVO
 
-    // Propiedad estática para acceso externo
     public static bool IsGamePaused() => isPaused;
-
-
-    public static PauseMenuManager Instance; // Singleton
+    public static PauseMenuManager Instance;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject); // Opcional: si el menú persiste entre escenas
         }
         else
         {
@@ -44,23 +38,18 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
-    
     void Start()
     {
-        
-        // Desactiva el menú al inicio
         pauseMenu.SetActive(false);
         optionsPanel.SetActive(false);
         quitConfirmationPanel.SetActive(false);
-        
-        //Configuración inicial
+
         sensitivitySlider.minValue = 1;
         sensitivitySlider.maxValue = 500;
         sensitivitySlider.value = 250;
         sensitivityInput.text = "250";
         pendingSensitivity = 250;
 
-        // Configura eventos
         sensitivitySlider.onValueChanged.AddListener(OnSliderChanged);
         sensitivityInput.onEndEdit.AddListener(OnInputChanged);
         applyButton.onClick.AddListener(ApplySettings);
@@ -77,19 +66,63 @@ public class PauseMenuManager : MonoBehaviour
     public void TogglePause()
     {
         // Si estamos haciendo zoom, no permitir pausar
-        if (ScreenInteraction.IsZoomed()) 
-        {
-            // Opcional: forzar salida del zoom si es necesario
+        if (ScreenInteraction.IsZoomed())
             return;
-        }
-        
+
         isPaused = !isPaused;
+
+        //Asegura que la UI se actualice ANTES de pausar el tiempo
+        var ui = FindObjectOfType<UIController>();
+        if (ui != null)
+            ui.SetPauseMenuUI(isPaused);
+
+        //Activa o desactiva el menú principal
         pauseMenu.SetActive(isPaused);
-        Time.timeScale = isPaused ? 0f : 1f;
+
+        //Cambia el estado del cursor
         Cursor.visible = isPaused;
         Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+
+        //Pausa o reanuda el tiempo (al final)
+        Time.timeScale = isPaused ? 0f : 1f;
+
+        Debug.Log($"[PauseMenuManager] Estado de pausa: {isPaused}");
     }
 
+    //NUEVO MÉTODO
+    private IEnumerator BloquearInputTemporal()
+    {
+        InputBloqueadoTemporalmente = true;
+        yield return new WaitForSecondsRealtime(0.25f);
+        InputBloqueadoTemporalmente = false;
+    }
+
+    //ACTUALIZADO
+    public void OnResumePressed()
+    {
+        TogglePause();
+        StartCoroutine(BloquearInputTemporal()); // ← Evita clics fantasmas tras cerrar el menú
+    }
+
+    public void OnOptionsPressed() => optionsPanel.SetActive(true);
+    public void OnBackPressed() => optionsPanel.SetActive(false);
+    public void OnQuitPressed() => quitConfirmationPanel.SetActive(true);
+
+    public void OnQuitToMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void OnQuitGame()
+    {
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
+
+    public void OnCancelQuit() => quitConfirmationPanel.SetActive(false);
 
     public void OnSliderChanged(float value)
     {
@@ -119,60 +152,8 @@ public class PauseMenuManager : MonoBehaviour
         Debug.Log($"Configuración aplicada: {finalValue}");
     }
 
-
-
-    // --- Invertir Eje Y ---
     public void OnInvertYToggleChanged()
     {
-        if (invertYToggle.isOn)
-        {
-            CameraRotation.SetInvertYAxis(true);
-        } else
-        {
-            CameraRotation.SetInvertYAxis(false);
-        }
-        
+        CameraRotation.SetInvertYAxis(invertYToggle.isOn);
     }
-
-    // --- Botones ---
-    public void OnResumePressed()
-    {
-        TogglePause();
-    }
-
-    public void OnOptionsPressed()
-    {
-        optionsPanel.SetActive(true);
-    }
-
-    public void OnBackPressed()
-    {
-        optionsPanel.SetActive(false);
-    }
-
-    public void OnQuitPressed()
-    {
-        quitConfirmationPanel.SetActive(true);
-    }
-
-    public void OnQuitToMenu()
-    {
-        Time.timeScale = 1f; // Asegura que el tiempo se reanude
-        SceneManager.LoadScene("MainMenu"); // Cambia "MainMenu" por tu escena
-    }
-
-    public void OnQuitGame()
-    {
-        Application.Quit();
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #endif
-    }
-
-    public void OnCancelQuit()
-    {
-        quitConfirmationPanel.SetActive(false);
-    }
-    
-
 }

@@ -78,33 +78,67 @@ public class NivelPirateria : MonoBehaviour
         AcomodarBarra();
     }
 
+    // public void ElegirSitio(bool esSeguro, int daño, string nombreSitio)
+    // {
+    //     if (!nivelActivo) return;
+
+    //     if (esSeguro)
+    //     {
+    //         feedbackTexto.text = $"Descarga segura desde: {nombreSitio}. ¡Buen trabajo!";
+    //         saludActual = Mathf.Min(saludActual + 10f, saludMax);
+    //         ActualizarUI(); // <- refresca barra
+    //         Victoria();
+    //         return;
+    //     }
+
+    //     // Descarga sospechoso -> aplicamos daño
+    //     saludActual -= daño;
+    //     if (saludActual < 0) saludActual = 0; //Forzar que nunca quede negativo
+
+    //     feedbackTexto.text = $"⚠ Has descargado desde: {nombreSitio}. Riesgo detectado.";
+    //     GenerarPopup($"Advertencia: {nombreSitio} tiene anuncios y archivos sospechosos.");
+
+    //     ActualizarUI(); //Refresca barra ANTES de checkear derrota
+
+    //     if (saludActual <= 0)
+    //     {
+    //         Derrota("Tu PC está completamente infectado.");
+    //     }
+    // }
+
     public void ElegirSitio(bool esSeguro, int daño, string nombreSitio)
     {
         if (!nivelActivo) return;
 
         if (esSeguro)
         {
-            feedbackTexto.text = $"Descarga segura desde: {nombreSitio}. ¡Buen trabajo!";
+            float saludAntes = saludActual;
             saludActual = Mathf.Min(saludActual + 10f, saludMax);
-            ActualizarUI(); // <- refresca barra
+            float ganado = saludActual - saludAntes;
+
+            feedbackTexto.text = $"✅ Descarga segura (+{ganado:F0} de salud)";
+            ActualizarUI();
             Victoria();
             return;
         }
 
-        // Descarga sospechoso -> aplicamos daño
+        // Descarga sospechosa → aplicar daño
+        float saludAntesInsegura = saludActual;
         saludActual -= daño;
-        if (saludActual < 0) saludActual = 0; //Forzar que nunca quede negativo
+        if (saludActual < 0) saludActual = 0;
 
-        feedbackTexto.text = $"⚠ Has descargado desde: {nombreSitio}. Riesgo detectado.";
-        GenerarPopup($"Advertencia: {nombreSitio} tiene anuncios y archivos sospechosos.");
+        float perdido = saludAntesInsegura - saludActual;
+        feedbackTexto.text = $"⚠ Riesgo detectado (-{perdido:F0} de salud)";
+        GenerarPopup($"Advertencia: descarga peligrosa detectada.");
 
-        ActualizarUI(); //Refresca barra ANTES de checkear derrota
+        ActualizarUI();
 
         if (saludActual <= 0)
         {
             Derrota("Tu PC está completamente infectado.");
         }
     }
+
 
 
     void AcomodarBarra()

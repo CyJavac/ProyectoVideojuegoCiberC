@@ -21,7 +21,8 @@ public class FileEntry
 public class FileDatabaseImporter : MonoBehaviour
 {
     [Header("CSV")]
-    public string csvRelativePath = "file_database.csv"; // inside StreamingAssets or Resources
+    //public string csvRelativePath = "file_database.csv"; // inside StreamingAssets or Resources 
+    public string csvRelativePath = "CSV Niveles/Contraseñas/file_database.csv";
     public bool useStreamingAssets = true;
     [Tooltip("Loaded file entries")]
     public List<FileEntry> entries = new List<FileEntry>();

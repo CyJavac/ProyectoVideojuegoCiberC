@@ -36,14 +36,43 @@ public class PauseMenuManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
     }
+
+    // void Start()
+    // {
+    //     pauseMenu.SetActive(false);
+    //     optionsPanel.SetActive(false);
+    //     quitConfirmationPanel.SetActive(false);
+
+    //     sensitivitySlider.minValue = 1;
+    //     sensitivitySlider.maxValue = 500;
+    //     sensitivitySlider.value = 250;
+    //     sensitivityInput.text = "250";
+    //     pendingSensitivity = 250;
+
+    //     sensitivitySlider.onValueChanged.AddListener(OnSliderChanged);
+    //     sensitivityInput.onEndEdit.AddListener(OnInputChanged);
+    //     applyButton.onClick.AddListener(ApplySettings);
+    // }
 
     void Start()
     {
-        pauseMenu.SetActive(false);
-        optionsPanel.SetActive(false);
-        quitConfirmationPanel.SetActive(false);
+        //Asegurar que el juego empiece sin estar pausado
+        Time.timeScale = 1f;
+        isPaused = false;
+        InputBloqueadoTemporalmente = false;
 
+        //Configurar UI inicial
+        if (pauseMenu) pauseMenu.SetActive(false);
+        if (optionsPanel) optionsPanel.SetActive(false);
+        if (quitConfirmationPanel) quitConfirmationPanel.SetActive(false);
+
+        //Asegurar cursor bloqueado y oculto (como en modo juego)
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        //Sensibilidad por defecto
         sensitivitySlider.minValue = 1;
         sensitivitySlider.maxValue = 500;
         sensitivitySlider.value = 250;
@@ -53,6 +82,8 @@ public class PauseMenuManager : MonoBehaviour
         sensitivitySlider.onValueChanged.AddListener(OnSliderChanged);
         sensitivityInput.onEndEdit.AddListener(OnInputChanged);
         applyButton.onClick.AddListener(ApplySettings);
+
+        Debug.Log("[PauseMenuManager] Inicialización completa. Juego listo.");
     }
 
     void Update()
@@ -111,15 +142,15 @@ public class PauseMenuManager : MonoBehaviour
     public void OnQuitToMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MenuPrincipal");
     }
 
     public void OnQuitGame()
     {
         Application.Quit();
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
+    #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+    #endif
     }
 
     public void OnCancelQuit() => quitConfirmationPanel.SetActive(false);

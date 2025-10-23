@@ -32,6 +32,30 @@ public class NivelPirateria : MonoBehaviour
 
     [SerializeField] private ChatPopupsManager chatManager;
 
+    [Header("Economía")]
+    public int creditos = 100;
+    public TextMeshProUGUI creditosTexto;
+    public int costoDescargaLegal = 40;
+
+    [Header("Derrota - Teléfono")]
+    public GameObject telefonoPanel;
+    public GameObject panelResponder;
+    public GameObject panelOpcionesDerrota;
+    public AudioSource audioRingtone;
+    public AudioSource audioVibracion;
+    public AudioSource audioLlamada;
+
+    public string escenaMenu = "MenuPrincipal";
+    public string escenaNivel = "NivelPirateria";
+
+
+
+    void ActualizarCreditos()
+    {
+        if (creditosTexto != null)
+            creditosTexto.text = $"Créditos: {creditos}";
+    }
+
     void CambiarMaterialMonitor()
     {
         if (monitorRenderer != null && materialInfectado != null)
@@ -78,27 +102,33 @@ public class NivelPirateria : MonoBehaviour
         AcomodarBarra();
     }
 
+
     // public void ElegirSitio(bool esSeguro, int daño, string nombreSitio)
     // {
     //     if (!nivelActivo) return;
 
     //     if (esSeguro)
     //     {
-    //         feedbackTexto.text = $"Descarga segura desde: {nombreSitio}. ¡Buen trabajo!";
+    //         float saludAntes = saludActual;
     //         saludActual = Mathf.Min(saludActual + 10f, saludMax);
-    //         ActualizarUI(); // <- refresca barra
+    //         float ganado = saludActual - saludAntes;
+
+    //         feedbackTexto.text = $"✅ Descarga segura (+{ganado:F0} de salud)";
+    //         ActualizarUI();
     //         Victoria();
     //         return;
     //     }
 
-    //     // Descarga sospechoso -> aplicamos daño
+    //     // Descarga sospechosa → aplicar daño
+    //     float saludAntesInsegura = saludActual;
     //     saludActual -= daño;
-    //     if (saludActual < 0) saludActual = 0; //Forzar que nunca quede negativo
+    //     if (saludActual < 0) saludActual = 0;
 
-    //     feedbackTexto.text = $"⚠ Has descargado desde: {nombreSitio}. Riesgo detectado.";
-    //     GenerarPopup($"Advertencia: {nombreSitio} tiene anuncios y archivos sospechosos.");
+    //     float perdido = saludAntesInsegura - saludActual;
+    //     feedbackTexto.text = $"⚠ Riesgo detectado (-{perdido:F0} de salud)";
+    //     GenerarPopup($"Advertencia: descarga peligrosa detectada.");
 
-    //     ActualizarUI(); //Refresca barra ANTES de checkear derrota
+    //     ActualizarUI();
 
     //     if (saludActual <= 0)
     //     {
@@ -106,39 +136,42 @@ public class NivelPirateria : MonoBehaviour
     //     }
     // }
 
-    public void ElegirSitio(bool esSeguro, int daño, string nombreSitio)
+    public void ElegirSitio(bool esSeguro, int daño, string nombreSitio, bool esLegal = false)
     {
         if (!nivelActivo) return;
 
-        if (esSeguro)
+        if (esLegal)
         {
-            float saludAntes = saludActual;
-            saludActual = Mathf.Min(saludActual + 10f, saludMax);
-            float ganado = saludActual - saludAntes;
-
-            feedbackTexto.text = $"✅ Descarga segura (+{ganado:F0} de salud)";
-            ActualizarUI();
-            Victoria();
+            if (creditos >= costoDescargaLegal)
+            {
+                creditos -= costoDescargaLegal;
+                ActualizarCreditos();
+                feedbackTexto.text = $"💾 Descargaste legalmente pagando {costoDescargaLegal} créditos.";
+                Victoria();
+            }
+            else
+            {
+                feedbackTexto.text = "⚠ No tienes suficientes créditos para comprar legalmente.";
+            }
             return;
         }
 
-        // Descarga sospechosa → aplicar daño
-        float saludAntesInsegura = saludActual;
+        if (esSeguro)
+        {
+            feedbackTexto.text = "✅ Descarga segura (pero pirata). Sin daño.";
+            // No daña, pero no cuenta como victoria.
+            return;
+        }
+
         saludActual -= daño;
         if (saludActual < 0) saludActual = 0;
-
-        float perdido = saludAntesInsegura - saludActual;
-        feedbackTexto.text = $"⚠ Riesgo detectado (-{perdido:F0} de salud)";
-        GenerarPopup($"Advertencia: descarga peligrosa detectada.");
-
+        feedbackTexto.text = $"⚠ Riesgo detectado (-{daño} salud)";
+        GenerarPopup("Descarga peligrosa detectada.");
         ActualizarUI();
 
         if (saludActual <= 0)
-        {
             Derrota("Tu PC está completamente infectado.");
-        }
     }
-
 
 
     void AcomodarBarra()
@@ -176,6 +209,22 @@ public class NivelPirateria : MonoBehaviour
         // aquí puedes llamar al ScoreManager o desbloquear siguiente nivel
     }
 
+    // void Derrota(string mensaje)
+    // {
+    //     nivelActivo = false;
+    //     saludActual = 0;
+    //     ActualizarUI();
+    //     feedbackTexto.text = mensaje + " ❌";
+
+    //     // Activar glitch overlay
+    //     if (glitchOverlay != null)
+    //     {
+    //         glitchOverlay.SetActive(true);
+    //     }
+
+    //     CambiarMaterialMonitor(); //Cambio de material
+    // }
+
     void Derrota(string mensaje)
     {
         nivelActivo = false;
@@ -183,15 +232,80 @@ public class NivelPirateria : MonoBehaviour
         ActualizarUI();
         feedbackTexto.text = mensaje + " ❌";
 
-        // Activar glitch overlay
         if (glitchOverlay != null)
-        {
             glitchOverlay.SetActive(true);
-        }
 
-        CambiarMaterialMonitor(); //Cambio de material
+        CambiarMaterialMonitor();
+
+        // Activar escena del teléfono
+        if (telefonoPanel != null)
+            telefonoPanel.SetActive(true);
+
+        // Iniciar sonidos
+        if (audioRingtone != null) audioRingtone.Play();
+        if (audioVibracion != null) audioVibracion.Play();
+
+        // Mostrar botón de responder
+        if (panelResponder != null)
+            panelResponder.SetActive(true);
     }
-    
-    
+
+
+    public void ResponderLlamada()
+    {
+        // Detener sonidos
+        if (audioRingtone != null) audioRingtone.Stop();
+        if (audioVibracion != null) audioVibracion.Stop();
+
+        // Ocultar botón de responder
+        if (panelResponder != null) panelResponder.SetActive(false);
+
+        // Reproducir voz
+        if (audioLlamada != null) audioLlamada.Play();
+
+        // Mostrar opciones después de 3 segundos
+        //StartCoroutine(MostrarOpcionesDerrota());
+    }
+
+    // IEnumerator MostrarOpcionesDerrota()
+    // {
+    //     yield return new WaitForSeconds(3f);
+    //     if (panelOpcionesDerrota != null)
+    //         panelOpcionesDerrota.SetActive(true);
+    // }
+
+    //public void VolverMenu() => UnityEngine.SceneManagement.SceneManager.LoadScene(escenaMenu);
+    //public void Reintentar() => UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
+
+    public void VolverMenu()
+    {
+        ScreenInteraction screenInteraction = FindObjectOfType<ScreenInteraction>();
+
+        if (screenInteraction != null)
+        {
+            screenInteraction.ForzarReinicioSeguro(escenaMenu);
+        }
+        else
+        {
+            // Fallback si no se encuentra (por seguridad)
+            UnityEngine.SceneManagement.SceneManager.LoadScene(escenaMenu);
+        }
+    }
+
+    public void Reintentar()
+    {
+        string escenaNivel = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        ScreenInteraction screenInteraction = FindObjectOfType<ScreenInteraction>();
+
+        if (screenInteraction != null)
+        {
+            screenInteraction.ForzarReinicioSeguro(escenaNivel);
+        }
+        else
+        {
+            // Fallback si no se encuentra (por seguridad)
+            UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
+        }
+    }
 
 }

@@ -151,14 +151,45 @@ public class ScreenInteraction : MonoBehaviour
 
         uiController.SetZoomModeUI(true); // Activa el panel ESC
 
-        yield return null;  
+        yield return null;
     }
 
-    private System.Collections.IEnumerator ReturnFromZoom()
+    // private System.Collections.IEnumerator ReturnFromZoom()
+    // {
+    //     StopCoroutine(ConfineCursorToCanvas());
+    //     screenCanvases[currentScreenIndex].gameObject.SetActive(false);
+
+    //     // Restablecer cursor INMEDIATAMENTE (sin esperar la animación)
+    //     Cursor.lockState = CursorLockMode.Locked;
+    //     Cursor.visible = false;
+
+    //     float elapsedTime = 0f;
+    //     while (elapsedTime < 1f)
+    //     {
+    //         playerCamera.transform.position = Vector3.Lerp(playerCamera.transform.position, preZoomPosition, elapsedTime);
+    //         playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, preZoomRotation, elapsedTime);
+    //         elapsedTime += Time.deltaTime * zoomSpeed;
+    //         yield return null;
+    //     }
+
+
+    //     isZoomed = false;
+    //     uiController.SetZoomModeUI(false);
+    // }
+
+    private IEnumerator ReturnFromZoom()
     {
+        // Evitar errores si no hay índice válido
+        if (currentScreenIndex < 0 || currentScreenIndex >= screenCanvases.Length)
+        {
+            Debug.LogWarning("⚠️ ReturnFromZoom llamado sin pantalla activa válida.");
+            isZoomed = false;
+            yield break;
+        }
+
         StopCoroutine(ConfineCursorToCanvas());
         screenCanvases[currentScreenIndex].gameObject.SetActive(false);
-        
+
         // Restablecer cursor INMEDIATAMENTE (sin esperar la animación)
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -172,8 +203,8 @@ public class ScreenInteraction : MonoBehaviour
             yield return null;
         }
 
-
         isZoomed = false;
+        currentScreenIndex = -1;
         uiController.SetZoomModeUI(false);
     }
 
@@ -198,11 +229,47 @@ public class ScreenInteraction : MonoBehaviour
             if ((Vector2)Input.mousePosition != clampedCursorPos)
             {
                 #if UNITY_EDITOR || UNITY_STANDALONE
-                UnityEngine.InputSystem.Mouse.current.WarpCursorPosition(clampedCursorPos);
+                                UnityEngine.InputSystem.Mouse.current.WarpCursorPosition(clampedCursorPos);
                 #endif
             }
 
             yield return null;
         }
+    }
+
+    public IEnumerator SalirDelZoomYReiniciar(string escenaNivel)
+    {
+        if (!isZoomed)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
+            yield break;
+        }
+
+        Debug.Log("🔄 Saliendo del zoom antes de reiniciar nivel...");
+
+        // Salir del zoom primero
+        yield return StartCoroutine(ReturnFromZoom());
+
+        // Espera un pequeño momento para seguridad
+        yield return new WaitForSeconds(0.5f);
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
+    }
+    
+    public void ForzarReinicioSeguro(string escenaNivel)
+    {
+        StartCoroutine(ReiniciarTrasZoom(escenaNivel));
+    }
+
+    private IEnumerator ReiniciarTrasZoom(string escenaNivel)
+    {
+        if (isZoomed)
+        {
+            Debug.Log("🔄 Saliendo del zoom antes de reiniciar...");
+            yield return StartCoroutine(ReturnFromZoom());
+            yield return new WaitForSeconds(0.4f);
+        }
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
     }
 }

@@ -1,0 +1,16 @@
+group_id,group_name,category,description
+1,RPG,videojuegos,Rol y aventuras épicas con mods ilimitados
+2,FPS,videojuegos,Disparos en primera persona con mejoras no oficiales
+3,Indie,videojuegos,Juegos independientes con contenido extra
+4,Survival,videojuegos,Supervivencia con mods que cambian la experiencia
+5,Sports,videojuegos,Deportes con físicas alteradas y contenido extra
+6,Strategy,videojuegos,Estrategia con mods de balance y nuevas facciones
+7,Horror,videojuegos,Terror modificado para más (o menos) miedo
+8,Platform,videojuegos,Plataformas con niveles y mecánicas custom
+9,Racing,videojuegos,Carreras con coches y pistas no oficiales
+10,Fighting,videojuegos,Lucha con personajes y movimientos extra
+11,Sandbox,videojuegos,Mundos abiertos con herramientas de creación
+12,Simulation,videojuegos,Simuladores realistas (o no tanto)
+13,Adventure,videojuegos,Aventuras con historias alternativas
+14,MMO,videojuegos,Multijugador masivo con servidores privados
+15,Retro,videojuegos,Clásicos rejuvenecidos con mods modernos

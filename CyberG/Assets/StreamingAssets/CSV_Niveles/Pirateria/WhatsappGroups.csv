@@ -1,0 +1,16 @@
+group_id,group_name,category,description
+1,CineFamilia,peliculas,Películas para toda la familia (con controles parentales rotos)
+2,PelisAction,peliculas,Acción y aventura sin límites (ni derechos de autor)
+3,StreamingPro,peliculas,Calidad de streaming profesional (en teoría)
+4,GamerElite,videojuegos,La élite del gaming modificado
+5,ConsoleMods,videojuegos,Mods que las consolas no aprueban
+6,IndieHeaven,videojuegos,Paraíso indie con acceso anticipado
+7,CineIndependent,peliculas,Cine independiente sin intermediarios
+8,PCGaming,videojuegos,Comunidad de PC gaming extremo
+9,EstrenosPro,peliculas,Estrenos antes que en el cine (a veces antes del rodaje)
+10,ClassicGames,videojuegos,Clásicos rejuvenecidos con mods
+11,UltraHDCinema,peliculas,4K real (cuando el codec funciona)
+"12,GameDevelopers,videojuegos,Desarrolladores que comparten sus ""experimentos"""
+13,CineAlternative,peliculas,Cine que no verás en plataformas legales
+14,ModdingCommunity,videojuegos,Comunidad global de modding
+15,CineGlobal,peliculas,Películas de todos los países (y algunos servidores)

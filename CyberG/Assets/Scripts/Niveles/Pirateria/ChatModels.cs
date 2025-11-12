@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// Assets/Scripts/Niveles/Pirateria/ChatModels.cs
-
 
 [Serializable]
 public class ChatGroup
@@ -20,9 +18,8 @@ public class ChatMessage
 {
     public int groupId;
     public string senderName;
-    public string messageType; // "text", "link", "image"
+    public string messageType;
     public string messageText;
-    public string mediaUrl;    // url o path dentro de StreamingAssets o assets
-    public int damage;         // daño aplicado si el jugador "descarga"
+    public string mediaUrl;
+    public int value; // ← daño (salud) o costo (créditos)
 }
-

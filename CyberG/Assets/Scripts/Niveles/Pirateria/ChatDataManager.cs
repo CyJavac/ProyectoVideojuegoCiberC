@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Assets/Scripts/Niveles/Pirateria/ChatDataManager.cs
 
 public class ChatDataManager : MonoBehaviour
 {
-    [Header("Rutas relativas dentro de StreamingAssets")]
-    [Tooltip("Ej: Nivel_Pirateria/TelegramGroups.csv")]
+    [Header("Configuración del Sitio")]
+    public bool isLegalSite = false; // ← AQUÍ SE DEFINE SI ES LEGAL O PIRATA
+
+    [Header("Rutas CSV")]
     public string groupsCsvPath;
     public string peliculasCsvPath;
     public string videojuegosCsvPath;
@@ -16,26 +17,30 @@ public class ChatDataManager : MonoBehaviour
     [HideInInspector] public List<ChatMessage> mensajesPeliculas = new List<ChatMessage>();
     [HideInInspector] public List<ChatMessage> mensajesVideojuegos = new List<ChatMessage>();
 
-    void Start()
-    {
-        LoadAllData();
-    }
+    void Start() => LoadAllData();
 
     public void LoadAllData()
     {
         grupos = CsvLoader.LoadGroups(groupsCsvPath);
-        mensajesPeliculas = CsvLoader.LoadMessages(peliculasCsvPath);
-        mensajesVideojuegos = CsvLoader.LoadMessages(videojuegosCsvPath);
 
-        Debug.Log($"[ChatDataManager] Grupos: {grupos.Count}, Peliculas: {mensajesPeliculas.Count}, Videojuegos: {mensajesVideojuegos.Count}");
+        if (!string.IsNullOrEmpty(peliculasCsvPath))
+            mensajesPeliculas = CsvLoader.LoadMessages(peliculasCsvPath);
+
+        if (!string.IsNullOrEmpty(videojuegosCsvPath))
+            mensajesVideojuegos = CsvLoader.LoadMessages(videojuegosCsvPath);
+
+        Debug.Log($"[ChatDataManager] {name}: " +
+                  $"Grupos: {grupos.Count}, " +
+                  $"Películas: {mensajesPeliculas.Count}, " +
+                  $"Juegos: {mensajesVideojuegos.Count} | " +
+                  $"Legal: {isLegalSite}");
     }
 
-    // Helpers rápidos
-    public List<ChatMessage> GetMessagesForGroup(int groupId, bool esPelicula)
+    public List<ChatMessage> GetMessagesForGroup(int groupId, string category)
     {
-        var source = esPelicula ? mensajesPeliculas : mensajesVideojuegos;
-        return source.FindAll(m => m.groupId == groupId);
+        if (category.Contains("pelic")) return mensajesPeliculas.FindAll(m => m.groupId == groupId);
+        return mensajesVideojuegos.FindAll(m => m.groupId == groupId);
     }
-
-    public ChatGroup GetGroupById(int id) => grupos.Find(g => g.groupId == id);
 }
+
+

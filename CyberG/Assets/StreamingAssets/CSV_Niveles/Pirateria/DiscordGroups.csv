@@ -1,0 +1,16 @@
+group_id,group_name,category,description;;;;;;;
+1,CineGeeks,peliculas,Servidor cinéfilo que comparte pelis raras (y malware);;;;;;;
+2,PelisRetro,peliculas,Pelis de los 80s ripeadas de VHS con estática incluida;;;;;;;
+"3,PirateCine,peliculas,Pelis nuevas en calidad ""artística""";;;;;;;
+"4,SteamBreakers,videojuegos,Cracks y mods ""educativos""";;;;;;;
+5,CodeGamers,videojuegos,Todo lo que el launcher no te deja hacer;;;;;;;
+6,IndieHive,videojuegos,Juegos indie antes de que sean cool;;;;;;;
+7,ClassicCinema,peliculas,Cine clásico con subtítulos creativos;;;;;;;
+8,GameMods,videojuegos,Mods que los desarrolladores no aprobarían;;;;;;;
+9,FilmBuff,peliculas,Pelis para entendidos (con errores de audio);;;;;;;
+"10,RetroGames,videojuegos,Emulación ""nostálgica""";;;;;;;
+"11,BlockbusterHub,peliculas,Estrenos en calidad ""teatro casero""";;;;;;;
+12,TechGamers,videojuegos,Parches no oficiales y fixes creativos;;;;;;;
+13,CultMovies,peliculas,Pelis de culto con doblajes únicos;;;;;;;
+"14,OpenSourceGames,videojuegos,""Juegos abiertos, código cerrado""";;;;;;;
+15,MovieManiacs,peliculas,Ediciones del director (sin permiso);;;;;;;

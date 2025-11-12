@@ -1,0 +1,31 @@
+﻿group_id,sender_name,message_type,message_text,media_url,damage,is_legal
+1,Star Wors IX (Edición Director),text,40,https://netflix.com/starworsix,40,true
+1,Fast & Curious (Versión legal 4K),text,40,https://netflix.com/fastcurious,40,true
+1,Capitán América: Malware Soldier — Original 1080p,text,40,https://netflix.com/capamericamw,40,true
+2,Volver al Virus (Restaurada oficialmente),text,35,https://netflix.com/volveralvirus,35,true
+2,Titanic 3D pero sin agua (Edición oficial),text,35,https://netflix.com/titanic3d,35,true
+3,Toy Estory: El Retorno del Buzo (Licencia oficial),text,30,https://netflix.com/toyestory,30,true
+3,Frozen.exe (Versión sin bugs),text,30,https://netflix.com/frozenexe,30,true
+4,Matrix: El Reinicio del Error — Edición HD,text,40,https://netflix.com/matrixerror,40,true
+5,Breaking Dad — Serie completa legal,text,25,https://netflix.com/breakingdad,25,true
+5,El Multiverso de Juanito — Estreno exclusivo,text,30,https://netflix.com/juanitoverse,30,true
+6,Buscando a Memo Jr. — HD oficial,text,20,https://netflix.com/memojr,20,true
+6,Encantada 3: Desencanto Real — Oficial,text,25,https://netflix.com/encantada3,25,true
+7,El Virus de los Simios — Versión segura,text,35,https://netflix.com/virusdesimios,35,true
+7,Doctor Extraloco — Original sin cortes,text,40,https://netflix.com/doctorextraloco,40,true
+8,Hackeando Hollywood — Documental legal,text,15,https://netflix.com/hackhollywood,15,true
+1,Star Wors IX: El despertar de los bugs,text,35,www.cinegeek.xyz/starworsix,35,true
+2,Volver al Virus (Edición VHS),text,25,www.retrotapes.com/backvirus,25,true
+3,Fast & Curious 12: Tokyo Bug,text,45,www.torrentcine.pw/fast12,45,true
+4,El Gran Lebowski: Edición Marmota,text,29,www.cultfilms.art/lebowski,29,true
+5,Matrix: Resurrecciones del error,text,44,www.directorscut.ws/matrix4,44,true
+6,Avatar 3: El camino del agua (sin agua),text,38,www.newfilms.co/avatar3,38,true
+7,Misión Imposible 7: Protocolo fallido,text,40,www.blockhub.cf/mission7,40,true
+8,Pulp Fiction: Timeline alternativo,text,31,www.quintinfilm.net/pulp,31,true
+9,John Wick 4: Bugs bala,text,43,www.actionload.pw/wick4,43,true
+10,Blade Runner 2049: Build inestable,text,39,www.futurefilms.tech/blade,39,true
+11,Los Increíbles 3: Error en la familia,text,32,www.familyfilms.cc/incredibles3,32,true
+12,Mad Max: Fury Road sin road,text,46,www.madmaxfilms.xyz/fury,46,true
+13,The Batman: Modo noche permanente,text,41,www.batfilms.dark/batman,41,true
+14,Dune: Parte Dos - Arena edition,text,47,www.dunefilms.sand/dune2,47,true
+15,Avatar 2: El sentido del agua (sin sentido),text,42,www.avatarfilms.hd/avatar2,42,true

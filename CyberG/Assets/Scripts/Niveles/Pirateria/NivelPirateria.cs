@@ -4,17 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-
 public class NivelPirateria : MonoBehaviour
 {
     [Header("UI")]
-    public Slider barraSaludPC;                 // Slider (0..1)
-    public Image barraFillImage;               // Image del Fill (assign in Inspector)
+    public Slider barraSaludPC;
+    public Image barraFillImage;
     public Image barraHandleImage;
     public TextMeshProUGUI tiempoTexto;
     public TextMeshProUGUI feedbackTexto;
-    public GameObject popupsParent;            // contenedor para pop-ups
-    public GameObject popupPrefab;             // prefab simple para popups
+    public GameObject popupsParent;
+    public GameObject popupPrefab;
 
     [Header("Parámetros")]
     [Range(0f, 100f)] public float saludMax = 100f;
@@ -35,7 +34,22 @@ public class NivelPirateria : MonoBehaviour
     [Header("Economía")]
     public int creditos = 100;
     public TextMeshProUGUI creditosTexto;
-    public int costoDescargaLegal = 40;
+
+    [Header("Sistema de Objetivos")]
+    public TextMeshProUGUI objetivosTexto; // ← Arrastra aquí el Text UI
+    public int objetivosTotales = 3;
+
+    [System.Serializable]
+    public class Objetivo
+    {
+        public string nombreMostrado;
+        public string mediaUrl; // ← Clave para comparar
+        public bool completado;
+    }
+
+    private List<Objetivo> objetivos = new List<Objetivo>();
+    private List<string> todosMediaUrls = new List<string>(); // Pool global
+    
 
     [Header("Derrota - Teléfono")]
     public GameObject telefonoPanel;
@@ -48,12 +62,20 @@ public class NivelPirateria : MonoBehaviour
     public string escenaMenu = "MenuPrincipal";
     public string escenaNivel = "NivelPirateria";
 
+    void Start()
+    {
+        ActualizarCreditos();
+        //RecopilarTodosMediaUrls();
+        //GenerarObjetivosAleatorios();
+        ReiniciarNivel();
+        //MostrarObjetivos();
+    }
 
 
     void ActualizarCreditos()
     {
         if (creditosTexto != null)
-            creditosTexto.text = $"Créditos: {creditos}";
+            creditosTexto.text = $"{creditos}";
     }
 
     void CambiarMaterialMonitor()
@@ -73,7 +95,6 @@ public class NivelPirateria : MonoBehaviour
     private void OnDisable()
     {
         nivelActivo = false;
-        // opcional: limpiar popups
         foreach (Transform t in popupsParent.transform) Destroy(t.gameObject);
     }
 
@@ -103,70 +124,28 @@ public class NivelPirateria : MonoBehaviour
     }
 
 
-    // public void ElegirSitio(bool esSeguro, int daño, string nombreSitio)
-    // {
-    //     if (!nivelActivo) return;
-
-    //     if (esSeguro)
-    //     {
-    //         float saludAntes = saludActual;
-    //         saludActual = Mathf.Min(saludActual + 10f, saludMax);
-    //         float ganado = saludActual - saludAntes;
-
-    //         feedbackTexto.text = $"✅ Descarga segura (+{ganado:F0} de salud)";
-    //         ActualizarUI();
-    //         Victoria();
-    //         return;
-    //     }
-
-    //     // Descarga sospechosa → aplicar daño
-    //     float saludAntesInsegura = saludActual;
-    //     saludActual -= daño;
-    //     if (saludActual < 0) saludActual = 0;
-
-    //     float perdido = saludAntesInsegura - saludActual;
-    //     feedbackTexto.text = $"⚠ Riesgo detectado (-{perdido:F0} de salud)";
-    //     GenerarPopup($"Advertencia: descarga peligrosa detectada.");
-
-    //     ActualizarUI();
-
-    //     if (saludActual <= 0)
-    //     {
-    //         Derrota("Tu PC está completamente infectado.");
-    //     }
-    // }
-
-    public void ElegirSitio(bool esSeguro, int daño, string nombreSitio, bool esLegal = false)
+    public void ElegirSitioPirata(int daño, string nombreSitio)
     {
         if (!nivelActivo) return;
 
-        if (esLegal)
+        // === MENSAJE INOFENSIVO (daño = 0) ===
+        if (daño <= 0)
         {
-            if (creditos >= costoDescargaLegal)
-            {
-                creditos -= costoDescargaLegal;
-                ActualizarCreditos();
-                feedbackTexto.text = $"💾 Descargaste legalmente pagando {costoDescargaLegal} créditos.";
-                Victoria();
-            }
-            else
-            {
-                feedbackTexto.text = "⚠ No tienes suficientes créditos para comprar legalmente.";
-            }
-            return;
+            feedbackTexto.text = $"Mensaje leído: {nombreSitio}";
+            GenerarPopup($"Sin riesgo: {nombreSitio}");
+            Debug.Log($"[PIRATA] Mensaje inofensivo: {nombreSitio}");
+            return; // ← No hace nada más
         }
 
-        if (esSeguro)
-        {
-            feedbackTexto.text = "✅ Descarga segura (pero pirata). Sin daño.";
-            // No daña, pero no cuenta como victoria.
-            return;
-        }
-
+        // === DESCARGA PELIGROSA (daño > 0) ===
         saludActual -= daño;
         if (saludActual < 0) saludActual = 0;
-        feedbackTexto.text = $"⚠ Riesgo detectado (-{daño} salud)";
-        GenerarPopup("Descarga peligrosa detectada.");
+
+        feedbackTexto.text = $"¡Virus detectado! (-{daño} salud)";
+        GenerarPopup($"¡Infectado desde {nombreSitio}!");
+        //CambiarMaterialMonitor();
+        //if (glitchOverlay != null) glitchOverlay.SetActive(true);
+
         ActualizarUI();
 
         if (saludActual <= 0)
@@ -174,14 +153,34 @@ public class NivelPirateria : MonoBehaviour
     }
 
 
+
+    public void ElegirSitioLegal(int costo, string nombreSitio)
+    {
+        if (!nivelActivo) return;
+
+        if (creditos >= costo)
+        {
+            creditos -= costo;
+            ActualizarCreditos();
+            feedbackTexto.text = $"Descarga legal completada (-{costo} créditos)";
+            GenerarPopup($"Comprado: {nombreSitio}");
+
+            Debug.Log($"[LEGAL] Compra exitosa: {nombreSitio}");
+        }
+        else
+        {
+            feedbackTexto.text = $"Faltan {costo - creditos} créditos";
+            GenerarPopup("Créditos insuficientes");
+        }
+    }
+
+
+
     void AcomodarBarra()
     {
         barraSaludPC.value = saludActual / saludMax;
-        // Color: verde (full) -> amarillo (mid) -> rojo (low)
-        float t = 1f - (saludActual / saludMax); // 0 => full, 1 => empty
+        float t = 1f - (saludActual / saludMax);
         Color color = Color.Lerp(Color.green, Color.red, t);
-        // Puedes suavizar pasando por amarillo si quieres:
-        // Color color = Color.Lerp(Color.green, Color.yellow, 1 - t); then Lerp to red...
         barraFillImage.color = color;
         barraHandleImage.color = color;
     }
@@ -189,7 +188,6 @@ public class NivelPirateria : MonoBehaviour
     void ActualizarUI()
     {
         tiempoTexto.text = $"Tiempo: \n{Mathf.CeilToInt(tiempoRestante)}s";
-        // actualizar barra ya hecha por AcomodarBarra()
         AcomodarBarra();
     }
 
@@ -199,7 +197,7 @@ public class NivelPirateria : MonoBehaviour
         GameObject p = Instantiate(popupPrefab, popupsParent.transform);
         TextMeshProUGUI t = p.GetComponentInChildren<TextMeshProUGUI>();
         if (t) t.text = texto;
-        Destroy(p, 4f); // se autodestruye en 4s
+        Destroy(p, 4f);
     }
 
     void Victoria()
@@ -208,22 +206,6 @@ public class NivelPirateria : MonoBehaviour
         feedbackTexto.text += " ✅";
         // aquí puedes llamar al ScoreManager o desbloquear siguiente nivel
     }
-
-    // void Derrota(string mensaje)
-    // {
-    //     nivelActivo = false;
-    //     saludActual = 0;
-    //     ActualizarUI();
-    //     feedbackTexto.text = mensaje + " ❌";
-
-    //     // Activar glitch overlay
-    //     if (glitchOverlay != null)
-    //     {
-    //         glitchOverlay.SetActive(true);
-    //     }
-
-    //     CambiarMaterialMonitor(); //Cambio de material
-    // }
 
     void Derrota(string mensaje)
     {
@@ -237,57 +219,35 @@ public class NivelPirateria : MonoBehaviour
 
         CambiarMaterialMonitor();
 
-        // Activar escena del teléfono
         if (telefonoPanel != null)
             telefonoPanel.SetActive(true);
 
-        // Iniciar sonidos
         if (audioRingtone != null) audioRingtone.Play();
         if (audioVibracion != null) audioVibracion.Play();
 
-        // Mostrar botón de responder
         if (panelResponder != null)
             panelResponder.SetActive(true);
     }
 
-
     public void ResponderLlamada()
     {
-        // Detener sonidos
-        if (audioRingtone != null) audioRingtone.Stop();
+        if (audioRingtone != null) audioRingtone.Stop(); 
         if (audioVibracion != null) audioVibracion.Stop();
 
-        // Ocultar botón de responder
         if (panelResponder != null) panelResponder.SetActive(false);
 
-        // Reproducir voz
         if (audioLlamada != null) audioLlamada.Play();
-
-        // Mostrar opciones después de 3 segundos
-        //StartCoroutine(MostrarOpcionesDerrota());
     }
-
-    // IEnumerator MostrarOpcionesDerrota()
-    // {
-    //     yield return new WaitForSeconds(3f);
-    //     if (panelOpcionesDerrota != null)
-    //         panelOpcionesDerrota.SetActive(true);
-    // }
-
-    //public void VolverMenu() => UnityEngine.SceneManagement.SceneManager.LoadScene(escenaMenu);
-    //public void Reintentar() => UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
 
     public void VolverMenu()
     {
         ScreenInteraction screenInteraction = FindObjectOfType<ScreenInteraction>();
-
         if (screenInteraction != null)
         {
             screenInteraction.ForzarReinicioSeguro(escenaMenu);
         }
         else
         {
-            // Fallback si no se encuentra (por seguridad)
             UnityEngine.SceneManagement.SceneManager.LoadScene(escenaMenu);
         }
     }
@@ -296,16 +256,13 @@ public class NivelPirateria : MonoBehaviour
     {
         string escenaNivel = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         ScreenInteraction screenInteraction = FindObjectOfType<ScreenInteraction>();
-
         if (screenInteraction != null)
         {
             screenInteraction.ForzarReinicioSeguro(escenaNivel);
         }
         else
         {
-            // Fallback si no se encuentra (por seguridad)
             UnityEngine.SceneManagement.SceneManager.LoadScene(escenaNivel);
         }
     }
-
 }

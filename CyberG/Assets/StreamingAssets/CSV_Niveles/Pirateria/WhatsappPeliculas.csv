@@ -19,6 +19,5 @@ group_id,sender_name,message_type,message_text,media_url,damage
 "15,WorldCinema,text,""Rápido y Furioso 25: Último bug"",www.fastfilms.world/furious25,50"
 "2,ActionFan,text,""Die Hard: Duro de matar (y de descargar)"",www.actionclassic.net/diehard,37"
 "3,StreamExpert,text,""Jurassic World: Dominion del bug"",www.dinostreams.cc/jurassicw,44"
-13,Juana,text,Ese text pide permisos raros,https://none,0
 14,Paula,text,Descarga “Star Peace”,https://fakestreams.org,50
 "15,Santiago,text,""Frozen 3"" antes del estreno,https://pelismagic.net,60"

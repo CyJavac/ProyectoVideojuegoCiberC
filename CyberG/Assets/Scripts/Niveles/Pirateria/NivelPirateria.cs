@@ -83,28 +83,71 @@ public class NivelPirateria : MonoBehaviour
     void Start()
     {
         ActualizarCreditos();
-        RecopilarTodosMediaUrls();
-        GenerarObjetivosAleatorios();
-        ReiniciarNivel();
-        MostrarObjetivos();
+        // RecopilarTodosMediaUrls();
+        // GenerarObjetivosAleatorios();
+        // ReiniciarNivel();
+        // MostrarObjetivos();
+
+        StartCoroutine(InicializarObjetivosConEspera());
     }
 
+    private IEnumerator InicializarObjetivosConEspera()
+    {
+        // Esperar 1 frame para que todos los ChatUIGenerator terminen Start()
+        yield return null;
+
+        // Asegurarse de que todos los generators hayan generado sus URLs
+        ChatUIGenerator[] generators = FindObjectsOfType<ChatUIGenerator>();
+        foreach (var gen in generators)
+        {
+            // Forzar generación si no se hizo (por si Start() falló)
+            if (gen.selectedMediaUrls.Count == 0)
+                gen.GenerateGroupButtons();
+        }
+
+        // Esperar otro frame por seguridad
+        yield return null;
+
+        RecopilarUrlsSeleccionadas(); // ← NUEVA FUNCIÓN
+        GenerarObjetivosAleatorios();
+        MostrarObjetivos();
+        ReiniciarNivel();
+    }
+
+
     
-    void RecopilarTodosMediaUrls()
+    // void RecopilarTodosMediaUrls()
+    // {
+    //     todosMediaUrls.Clear();
+
+    //     // Buscar TODOS los ChatDataManager en la escena
+    //     ChatDataManager[] todosManagers = FindObjectsOfType<ChatDataManager>();
+    //     foreach (var manager in todosManagers)
+    //     {
+    //         todosMediaUrls.AddRange(manager.mensajesPeliculas.Select(m => m.mediaUrl));
+    //         todosMediaUrls.AddRange(manager.mensajesVideojuegos.Select(m => m.mediaUrl));
+    //     }
+
+    //     Debug.Log($"[OBJETIVOS] Recopilados {todosMediaUrls.Count} URLs únicas");
+    //     todosMediaUrls = todosMediaUrls.Distinct().ToList();
+    // }
+    void RecopilarUrlsSeleccionadas()
     {
         todosMediaUrls.Clear();
 
-        // Buscar TODOS los ChatDataManager en la escena
-        ChatDataManager[] todosManagers = FindObjectsOfType<ChatDataManager>();
-        foreach (var manager in todosManagers)
+        // NUEVO: Usar selectedMediaUrls de TODOS los ChatUIGenerator
+        ChatUIGenerator[] generators = FindObjectsOfType<ChatUIGenerator>();
+        foreach (var gen in generators)
         {
-            todosMediaUrls.AddRange(manager.mensajesPeliculas.Select(m => m.mediaUrl));
-            todosMediaUrls.AddRange(manager.mensajesVideojuegos.Select(m => m.mediaUrl));
+            todosMediaUrls.AddRange(gen.selectedMediaUrls);
         }
 
-        Debug.Log($"[OBJETIVOS] Recopilados {todosMediaUrls.Count} URLs únicas");
+        // Eliminar duplicados
         todosMediaUrls = todosMediaUrls.Distinct().ToList();
+
+        Debug.Log($"[OBJETIVOS] URLs seleccionadas visibles: {todosMediaUrls.Count}");
     }
+
 
     void GenerarObjetivosAleatorios()
     {

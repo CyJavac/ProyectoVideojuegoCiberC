@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ChatUIGenerator : MonoBehaviour
 {
     [Header("Contenedor global de paneles")]
-    public Transform panelEspacioChats; // arrastra aquí el Panel_EspacioChats desde el editor
+    public Transform panelEspacioChats; // Panel_EspacioChats desde el editor
 
     [Header("Data")]
     [Tooltip("Referencia al ChatDataManager que carga los CSV")]
@@ -35,6 +35,9 @@ public class ChatUIGenerator : MonoBehaviour
     private List<ChatGroup> selectedGroups = new List<ChatGroup>();
     private List<GameObject> spawnedPanels = new List<GameObject>();
 
+    // NUEVO: Lista de URLs seleccionadas para objetivos
+    public List<string> selectedMediaUrls = new List<string>();
+
     private IEnumerator Start()
     {
         if (dataManager == null)
@@ -56,11 +59,11 @@ public class ChatUIGenerator : MonoBehaviour
 
         if (dataManager.grupos == null || dataManager.grupos.Count == 0)
         {
-            Debug.LogError("❌ ChatDataManager aún no tiene grupos después de esperar.");
+            Debug.LogError("[X] ChatDataManager aún no tiene grupos después de esperar.");
             yield break;
         }
 
-        Debug.Log($"✅ [ChatUIGenerator] Detectados {dataManager.grupos.Count} grupos listos.");
+        Debug.Log($"[O] [ChatUIGenerator] Detectados {dataManager.grupos.Count} grupos listos.");
         GenerateGroupButtons();
     }
 
@@ -70,6 +73,7 @@ public class ChatUIGenerator : MonoBehaviour
         foreach (var p in spawnedPanels) Destroy(p);
         spawnedPanels.Clear();
         selectedGroups.Clear();
+        selectedMediaUrls.Clear(); // NUEVO: Limpiar URLs
 
         var allGroups = dataManager.grupos;
         if (allGroups == null || allGroups.Count == 0)
@@ -122,8 +126,23 @@ public class ChatUIGenerator : MonoBehaviour
             ChatGroup captured = grp;
             GameObject capturedPanel = panelGO;
             b.onClick.AddListener(() => OpenGroupPanel(captured, capturedPanel));
+
+            // NUEVO: Pre-seleccionar mensajes y añadir URLs
+            var messages = dataManager.GetMessagesForGroup(grp.groupId, grp.category);
+            if (messages.Count == 0)
+            {
+                messages = (grp.category.Contains("pelic") ? dataManager.mensajesPeliculas : dataManager.mensajesVideojuegos)
+                           .OrderBy(x => Random.value).Take(messagesPerGroup).ToList();
+            }
+            var shuffledMessages = messages.OrderBy(x => Random.value).Take(messagesPerGroup).ToList();
+            foreach (var msg in shuffledMessages)
+            {
+                if (!string.IsNullOrEmpty(msg.mediaUrl))
+                    selectedMediaUrls.Add(msg.mediaUrl);
+            }
         }
 
+        //selectedMediaUrls = selectedMediaUrls.Distinct().ToList(); // Eliminar duplicados
         Debug.Log($"[ChatUIGenerator] Generados {selectedGroups.Count} botones de grupo.");
     }
 
@@ -141,7 +160,8 @@ public class ChatUIGenerator : MonoBehaviour
                        .OrderBy(x => Random.value).Take(5).ToList();
         }
 
-        var shuffled = messages.OrderBy(x => Random.value).Take(10).ToList();
+        //var shuffled = messages.OrderBy(x => Random.value).Take(10).ToList();
+        var shuffled = messages.OrderBy(x => Random.value).Take(messagesPerGroup).ToList();
 
         // foreach (var msg in shuffled)
         // {
@@ -204,9 +224,5 @@ public class ChatUIGenerator : MonoBehaviour
 
         panelGO.SetActive(true);
     }
-
-
-
-
 
 }

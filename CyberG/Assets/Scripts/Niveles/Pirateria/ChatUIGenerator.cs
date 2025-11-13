@@ -143,6 +143,34 @@ public class ChatUIGenerator : MonoBehaviour
 
         var shuffled = messages.OrderBy(x => Random.value).Take(10).ToList();
 
+        // foreach (var msg in shuffled)
+        // {
+        //     GameObject mGO = Instantiate(messagePrefab, content);
+        //     mGO.transform.Find("Txt_NombreMiembro").GetComponent<Text>().text = msg.senderName;
+        //     mGO.transform.Find("Txt_Mensaje").GetComponent<Text>().text = msg.messageText;
+
+        //     Button btn = mGO.transform.Find("Btn_Link").GetComponent<Button>();
+        //     btn.onClick.RemoveAllListeners();
+
+        //     // Capturar valores correctos
+        //     int value = msg.value;
+        //     string siteName = msg.messageText;
+        //     bool isLegal = dataManager.isLegalSite;
+
+        //     btn.onClick.AddListener(() =>
+        //     {
+        //         int costo = msg.value;
+        //         string nombre = msg.messageText;
+        //         bool esLegal = dataManager.isLegalSite;
+
+        //         if (esLegal)
+        //             nivelPirateria.ElegirSitioLegal(costo, nombre); // ← SIN Victoria()
+        //         else
+        //             nivelPirateria.ElegirSitioPirata(costo, nombre);
+        //     });
+
+        // }
+
         foreach (var msg in shuffled)
         {
             GameObject mGO = Instantiate(messagePrefab, content);
@@ -152,32 +180,27 @@ public class ChatUIGenerator : MonoBehaviour
             Button btn = mGO.transform.Find("Btn_Link").GetComponent<Button>();
             btn.onClick.RemoveAllListeners();
 
-            // Capturar valores correctos
-            int value = msg.value;
-            string siteName = msg.messageText;
-            bool isLegal = dataManager.isLegalSite;
-
-            // btn.onClick.AddListener(() =>
-            // {
-            //     if (isLegal)
-            //         nivelPirateria.ElegirSitioLegal(value, siteName);
-            //     else
-            //         nivelPirateria.ElegirSitioPirata(value, siteName);
-            // });
-            
-            btn.onClick.AddListener(() =>
+            if (msg.value > 0) // Solo si tiene valor
             {
-                int costo = msg.value;
-                string nombre = msg.messageText;
+                int valor = msg.value;
+                string siteName = msg.messageText;
+                string mediaUrl = msg.mediaUrl; // ← CAPTURAR URL
                 bool esLegal = dataManager.isLegalSite;
 
-                if (esLegal)
-                    nivelPirateria.ElegirSitioLegal(costo, nombre); // ← SIN Victoria()
-                else
-                    nivelPirateria.ElegirSitioPirata(costo, nombre);
-            });
-
+                btn.onClick.AddListener(() =>
+                {
+                    if (esLegal)
+                        nivelPirateria.ElegirSitioLegal(valor, siteName, mediaUrl); // ← PASAR URL
+                    else
+                        nivelPirateria.ElegirSitioPirata(valor, siteName, mediaUrl); // ← PASAR URL
+                });
+            }
+            else
+            {
+                btn.interactable = false;
+            }
         }
+
 
         panelGO.SetActive(true);
     }

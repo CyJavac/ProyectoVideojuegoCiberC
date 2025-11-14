@@ -5,9 +5,9 @@ public class MainMenuManager : MonoBehaviour
 {
     [Header("Nombres de escenas")]
     [Tooltip("Escribe los nombres exactamente como aparecen en Build Settings.")]
-    public string escenaNivelPhishing = "Nivel_Phishing";
-    public string escenaNivelPirateria = "Nivel_Pirateria";
-    public string escenaNivelContrasenas = "Nivel_Contrasenas";
+    public string escenaNivelPhishing = "NivelPhishing";
+    public string escenaNivelPirateria = "Pirateria";
+    public string escenaNivelContrasenas = "Contraseñas";
 
     [Header("Opciones generales")]
     public bool mostrarCursor = true; // por si se quiere ocultar en otros menús

@@ -78,7 +78,7 @@ public class NivelPirateria : MonoBehaviour
     [Header("Escenas")]
     public string escenaSiguiente = "Contraseñas";
     public string escenaMenu = "MenuPrincipal";
-    public string escenaNivel = "NivelPirateria";
+    public string escenaNivel = "Pirateria";
 
     void Start()
     {

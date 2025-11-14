@@ -1505,7 +1505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1249a3f95be80d145993dacacd95d0a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  escenaNivelPhishing: Phishing
+  escenaNivelPhishing: NivelPhishing
   escenaNivelPirateria: Pirateria
   escenaNivelContrasenas: "Contrase\xF1as"
   mostrarCursor: 1

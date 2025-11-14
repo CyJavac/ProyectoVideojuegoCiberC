@@ -8,13 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MenuPrincipal.unity
     guid: de865d9d70f042a49902cd94be1424e5
-  - enabled: 0
-    path: Assets/Scenes/Phishing.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/Pirateria.unity
     guid: bcfe31cd93a532948928887ca66a2490
   - enabled: 1
     path: "Assets/Scenes/Contrase\xF1as.unity"
     guid: c81bf797d7273b14a823f2ad9cf932df
+  - enabled: 1
+    path: Assets/Scenes/NivelPhishing.unity
+    guid: 46e6c5e15f64f134380c77b3ef7d3f14
   m_configObjects: {}
